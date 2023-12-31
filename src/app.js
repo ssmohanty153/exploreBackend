@@ -21,4 +21,13 @@ app.on("error", (error) => {
     throw error;
 })
 
+//routes
+
+
+import userRouter from './routers/user.routes.js'
+
+//routees declarton
+
+app.use("/api/v1/users",userRouter)
+
 export { app }
