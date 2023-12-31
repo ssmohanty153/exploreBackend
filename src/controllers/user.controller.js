@@ -20,13 +20,13 @@ const registerUser = asyncHandler(async (req, res) => {
     //     throw new ApiError(400, "fullname is required")
     // }
 
-    if ([fullname, email, password, username].some((field) =>
-        field?.trim() === ""
-    )) {
-        throw new ApiError(400, "All flelds are required")
+    if (
+        [fullname, email, username, password].some((field) => field?.trim() === "")
+    ) {
+        throw new ApiError(400, "All fields are required")
     }
 
-    const exitedUser = User.findOne({ $or: [{ username }, { email }] })
+    const exitedUser = await User.findOne({ $or: [{ username }, { email }] })
     if (exitedUser) {
         throw new ApiError(409, "User with email or username already exits")
     }
@@ -71,9 +71,9 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
 
-    res.status(200).json({
-        message: "ok"
-    })
+    // res.status(200).json({
+    //     message: "ok"
+    // })
 
 })
 
