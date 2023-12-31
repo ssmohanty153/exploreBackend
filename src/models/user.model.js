@@ -50,6 +50,9 @@ const userSchema = new Schema({
 }, { timestamps: true })
 
 
+//pre basically we are using to its like when any changes will
+// have open it will first check the pre then move to the other opetaion
+//in below its written save when data will save in data base ita will foiet go the pre which is presend in the mongoose
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) {
         return next()
@@ -58,10 +61,13 @@ userSchema.pre("save", async function (next) {
     next()
 })
 
+//methods basically we are using to cretae our own merthods like isPasswordCorrect
+// this in basically using in mongoose
 userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password)
 }
-
+//methods basically we are using to cretae our own merthods like isPasswordCorrect
+// this in basically using in mongoose
 userSchema.methods.generateAccessToken = function () {
     jwt.sign({
         _id: this.id,
@@ -72,6 +78,8 @@ userSchema.methods.generateAccessToken = function () {
         expiresIn: process.env.ACCESS_TOKEN_EXPIRY
     })
 }
+//methods basically we are using to cretae our own merthods like isPasswordCorrect
+// this in basically using in mongoose
 userSchema.methods.generateRefreshToken = function () {
     jwt.sign({
         _id: this.id,
