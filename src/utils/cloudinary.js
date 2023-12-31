@@ -34,4 +34,4 @@ cloudinary.v2.uploader.upload("https://upload.wikimedia.org/wikipedia/commons/a/
     function (error, result) { console.log(result); });
 
 
-export default uploadOnCloudnary
+export { uploadOnCloudnary }

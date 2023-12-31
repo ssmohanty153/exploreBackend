@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt"
 
 const userSchema = new Schema({
-    userName: {
+    username: {
         type: String,
         required: true,
         unique: true,
@@ -18,7 +18,7 @@ const userSchema = new Schema({
         lowercse: true,
         trim: true,
     },
-    fullName: {
+    fullname: {
         type: String,
         required: true,
         trim: true,
@@ -72,8 +72,8 @@ userSchema.methods.generateAccessToken = function () {
     jwt.sign({
         _id: this.id,
         email: this.email,
-        username: this.userName,
-        fullName: this.fullName
+        username: this.username,
+        fullname: this.fullname
     }, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: process.env.ACCESS_TOKEN_EXPIRY
     })
