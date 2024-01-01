@@ -69,7 +69,7 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 //methods basically we are using to cretae our own merthods like isPasswordCorrect
 // this in basically using in mongoose
 userSchema.methods.generateAccessToken = function () {
-    jwt.sign({
+    return jwt.sign({
         _id: this.id,
         email: this.email,
         username: this.username,
@@ -81,7 +81,7 @@ userSchema.methods.generateAccessToken = function () {
 //methods basically we are using to cretae our own merthods like isPasswordCorrect
 // this in basically using in mongoose
 userSchema.methods.generateRefreshToken = function () {
-    jwt.sign({
+    return jwt.sign({
         _id: this.id,
     }, process.env.REFRESH_TOKEN_SECRET, {
         expiresIn: process.env.REFRESH_TOKEN_EXPIRE
