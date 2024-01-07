@@ -5,6 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudnary } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken"
+import mongoose from "mongoose";
 
 const generateAccessAndRefreshTokens = async (userId) => {
 
@@ -151,8 +152,9 @@ const logoutUser = asyncHandler(async (req, res) => {
 
     await User.findByIdAndUpdate(
         req.user._id, {
-        $set: {
-            refreshToken: undefined
+        $unset: {
+            refreshToken: 1
+            //this removed field from the document
         }
     }, {
         new: true
@@ -168,7 +170,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-    const incomingRefreshToken = req.cookie.refreshToken || req.body.refreshToken;
+    const incomingRefreshToken = req?.cookie?.refreshToken || req?.body?.refreshToken;
 
     if (!incomingRefreshToken) {
         throw new ApiError(401, "Unathorized request");
@@ -202,15 +204,17 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 })
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
-    const { oldPAssword, newPassword } = req.body;
+    const { oldPassword, newPassword } = req.body;
 
-    const user = await User.findById(req.user?._id);
-
-    const isPassowrdCorrect = await user.isPAsswordCorrect(oldPAssword);
+    const user = await User.findById(req.user?._id)
+    const isPassowrdCorrect = await user.isPasswordCorrect(oldPassword);
     if (!isPassowrdCorrect) {
         throw new ApiError(400, "Invalid oldPassword")
     }
-    user.passowrd = newPassword
+    user.password = newPassword;
+
+    console.log("user-----------------", user);
+
     await user.save({ validateBeforeSave: false })
 
     return res.status(200).json(
@@ -290,17 +294,25 @@ const updateUseCoverImage = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, user, "cover iamge updated"))
 })
 
-const getUserChannalProfile = asyncHandler(async (req, res) => {
+const getUserChannelProfile = asyncHandler(async (req, res) => {
     const { username } = req.params;
 
     if (!username?.trim()) {
         throw new ApiError(400, "username is missing")
     }
 
-    const channal = await User.aggregate([
+    const channel = await User.aggregate([
         {
             $match: {
                 username: username?.toLowerCase()
+            }
+        },
+        {
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "channel",
+                as: "subscribers"
             }
         },
         {
@@ -408,4 +420,4 @@ const getWatchHistory = asyncHandler(async (req, res) => {
         )
 })
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateUserAvtar, updateUseCoverImage, getUserChannalProfile, getWatchHistory }
+export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, updateAccountDetails, updateUserAvtar, updateUseCoverImage, getUserChannelProfile, getWatchHistory }

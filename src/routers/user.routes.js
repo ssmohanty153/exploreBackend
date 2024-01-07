@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { changeCurrentPassword, getCurrentUser, getUserChannalProfile, getWatchHistory, loginUser, logoutUser, refreshAccessToken, registerUser, updateAccountDetails, updateUseCoverImage, updateUserAvtar } from "../controllers/user.controller.js";
+import { changeCurrentPassword, getCurrentUser, getUserChannelProfile, getWatchHistory, loginUser, logoutUser, refreshAccessToken, registerUser, updateAccountDetails, updateUseCoverImage, updateUserAvtar } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { veryfyJWT } from "../middlewares/auth.middleware.js";
 const router = Router()
@@ -37,7 +37,7 @@ router.route("/avtar").patch(veryfyJWT, upload.single("avatar"), updateUserAvtar
 
 router.route("/cover-image").patch(veryfyJWT, upload.single("coverImage"), updateUseCoverImage);
 
-router.route("/c/:username").get(veryfyJWT, getUserChannalProfile);
+router.route("/c/:username").get(veryfyJWT, getUserChannelProfile);
 
 router.route("/history").get(veryfyJWT, getWatchHistory);
 
